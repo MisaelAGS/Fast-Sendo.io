@@ -7,7 +7,6 @@ from time import sleep
 import pyautogui
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 
-
 # Função para enviar a lista de contatos
 def enviar_lista_contatos(df, coluna_contato, mensagem_template):
     for index, row in df.iterrows():
@@ -21,13 +20,11 @@ def enviar_lista_contatos(df, coluna_contato, mensagem_template):
         pyautogui.hotkey('ctrl', 'w')
         sleep(5)
 
-
 # Função para inicializar o DataFrame no estado da sessão
 def iniciar_sessao():
     if 'df' not in st.session_state:
         data = {'ID': [], 'Telefone': []}
         st.session_state.df = pd.DataFrame(data)
-
 
 # Configurações de Layout
 st.set_page_config(page_title="Fast Send.io", page_icon="⚡", layout="wide")
@@ -124,6 +121,17 @@ else:
             st.success('Coluna adicionada com sucesso!')
         else:
             st.warning('Por favor, insira um nome válido e único para a nova coluna.')
+
+    st.subheader('Remover Coluna Existente')
+    colunas_remover = [col for col in st.session_state.df.columns if col not in ['ID', 'Telefone']]
+    coluna_remover = st.selectbox('Selecione a coluna a ser removida', colunas_remover)
+
+    if st.button('Remover Coluna'):
+        if coluna_remover in st.session_state.df.columns:
+            st.session_state.df.drop(columns=[coluna_remover], inplace=True)
+            st.success('Coluna removida com sucesso!')
+        else:
+            st.warning('Coluna não encontrada na tabela.')
 
     st.subheader('Adicionar Nova Linha')
     dados_nova_linha = {}
