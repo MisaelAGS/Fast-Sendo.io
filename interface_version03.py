@@ -4,7 +4,6 @@ from pandas import read_csv
 from urllib.parse import quote
 import webbrowser
 from time import sleep
-import pyautogui
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 
 # Função para enviar a lista de contatos
@@ -14,11 +13,9 @@ def enviar_lista_contatos(df, coluna_contato, mensagem_template):
         mensagem = mensagem_template.format(**row)
         link_mensagem = f'https://web.whatsapp.com/send?phone={int(telefone)}&text={quote(mensagem)}'
         webbrowser.open(link_mensagem)
-        sleep(10)
-        pyautogui.hotkey('enter')
-        sleep(5)
-        pyautogui.hotkey('ctrl', 'w')
-        sleep(5)
+        sleep(10)  # Aguarda o usuário enviar a mensagem manualmente
+        # Aqui, você pode incluir instruções para o usuário enviar a mensagem manualmente
+        # como um aviso na interface do usuário
 
 # Função para inicializar o DataFrame no estado da sessão
 def iniciar_sessao():
@@ -167,8 +164,7 @@ else:
         dados_alterar = {}
         for column in st.session_state.df.columns:
             if column != 'ID':
-                dados_alterar[column] = st.text_input(f'Novo valor para {column} (ID {id_alterar})',
-                                                      key=f'edit_row_{column}')
+                dados_alterar[column] = st.text_input(f'Novo valor para {column} (ID {id_alterar})', key=f'edit_row_{column}')
 
         if st.button('Alterar Linha'):
             if all(dados_alterar.values()):
@@ -198,8 +194,7 @@ else:
     st.write('Tabela atualizada:')
     st.dataframe(st.session_state.df)
 
-    coluna_telefone = st.radio('Qual das colunas corresponde aos números de telefone?',
-                               st.session_state.df.columns.tolist())
+    coluna_telefone = st.radio('Qual das colunas corresponde aos números de telefone?', st.session_state.df.columns.tolist())
 
     mensagem = st.text_area('Escreva a sua mensagem aqui:')
 
